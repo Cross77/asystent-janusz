@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 
+  title: Bot Janusz
+  autor: Jeremiasz Mazur
+  ver: 1.0
+ -->
+
+<head>
+  <meta charset="UTF-8">
+  <title>Asystent Janusz</title>
+  <link rel="stylesheet" href="scss/reset.css">
+
+  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+
+  <link rel="stylesheet" href="scss/style.css">
+
+</head>
+
+<body>
+
+  <div class="container clearfix">
+
+    <div class="chat">
+      <div class="chat-header clearfix">
+        <img src="./img/janusz.png" alt="avatar" />
+
+        <div class="chat-about">
+          <div class="chat-with">Bot Janusz</div>
+          <div class="chat-num-messages">łącznie
+            <span id="msg-counter">0</span> wiadomości</div>
+        </div>
+        <a href="https://github.com/Cross77/asystent-janusz">
+          <i class="fa fa-github"></i>
+        </a>
+      </div>
+      <!-- end chat-header -->
+
+      <div class="chat-history">
+        <ul>
+        </ul>
+
+      </div>
+      <!-- end chat-history -->
+
+      <div class="chat-message clearfix">
+        <textarea name="message-to-send" id="message-to-send" placeholder="Wpisz zapytanie do asystenta. Możesz też poprosić o żart."
+          rows="3"></textarea>
+        <button id="btn-send">Wyślij</button>
+
+      </div>
+      <!-- end chat-message -->
+
+    </div>
+    <!-- end chat -->
+
+  </div>
+  <!-- end container -->
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src='js/handlebars.min.js'></script>
+  <script src='js/list.min.js'></script>
+  <script src="js/bot.js"></script>
+</body>
+
+</html>
