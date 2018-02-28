@@ -159,7 +159,9 @@ class Bot {
     }
     // odpowiedz żartu bota
     private answerJoke(){
+      // wyświetlenie odpowiedzi
       this.log(this.data_jokes[this.joke_state][1]);
+      // zmiana stanów
       this.joke_state = false;
       this.was_joke = true;
     }
@@ -192,11 +194,13 @@ class Bot {
             return true;
           }
         });
+        // jezeli jest reakcja uzytkownika
         if(is_reaction){
           this.log('Ciesze się że spodobał Ci się mój żart :)');
           return false;
         }
       }
+      // zmiana stanu was_joke
       this.was_joke = true;
       // jezeli ostatnio wyslal pierwsza czesc zartu
       if(typeof this.joke_state == 'number'){
@@ -205,13 +209,16 @@ class Bot {
       // jezeli jest stan oczekiwania na odpowiedz
       }else if(this.question_state){
         if(this.isTrue(str)){
+          // stworzenie powiązania
           this.saveQuestion();
           return false;
         }else{
+          // zmiana stanu
           this.question_state = false;
           this.log('Przepraszam, spróbuj inaczej zadać pytanie..');
           return false;
         }
+        // zmiana stanu
         this.question_state = false;
       }else{
         // sprawdzanie czy user chce zartu
@@ -243,14 +250,15 @@ class Bot {
         }
       }
     }
+    // szukanie odp na pytanie 
     private findAnswer(str: string):{
-      percent: number,
-      id: number
+      percent: number, // najlepsze procentowe dopasowanie
+      id: number // id najlepszego zapytania
     }{
       // najlepszy wynik
       var best = {
-        percent: -1, // w procentach
-        id: -1 // id wyniku
+        percent: -1, // najlepsze procentowe dopasowanie
+        id: -1 // id najlepszego zapytania
       };
       var scope = this;
       
@@ -274,6 +282,7 @@ class Bot {
           if(best.percent > 0){
             // podaj propozycje i czekaj na odpowiedz
             this.log('Czy chodzi Ci o? : ' + this.data[best.id][0]);
+            // zmiana stanu
             this.question_state = {
               question: str,
               question_id: best.id
@@ -288,6 +297,7 @@ class Bot {
             return helper;
           }else if(helper.percent > 0){
             this.log('Czy chodzi Ci o? : ' + this.data[helper.id][0]);
+            // zmiana stanu
             this.question_state = {
               question: str,
               question_id: helper.id
@@ -298,6 +308,7 @@ class Bot {
           
         }
       }else{ // jezeli wszystko ok
+        // wyswietli odpowiedz
         this.log(this.data[best.id][1]);
       }
       return best;
@@ -311,8 +322,8 @@ class Bot {
     }{
       // najlepszy wynik
       var best = {
-        percent: -1, // w procentach
-        id: -1 // id wyniku
+        percent: -1, // najlepsze procentowe dopasowanie
+        id: -1 // id najlepszego dopasowania
       }
       var scope = this;
       var temp = 0;
@@ -332,15 +343,21 @@ class Bot {
 // podstawowa konfiguracja
 var cfg = {
   name: 'Janusz',
-  data: false,
-  data_jokes: false,
-  data_helper: new Array(),
+  data: false, // to zostanie pobrane później
+  data_jokes: false, // to zostanie pobrane później
+  data_helper: new Array(), // pusta tab pozwiązań ale można ją po prostu skądś odczytywac i zapisywac
   functions: {
+    // słowa potwierdzające
     yes: ['tak', 'tk', 'ta', 'jasne', 'oczywiście', 'oczywiscie', 'mhm', 'no', 'nom', 'pewnie'],
+    // słowa przeczące
     no: ['nie', 'ni', 'nope', 'ne', 'chyba ty'],
+    // słowa klucz proszące o żart
     joke: ['żart', 'zart', 'dowcip', 'śmieszne', 'śmiesznego', 'smiesznego', 'smieszne', 'zaratruj', 'zażartuj'],
+    // definicja pozytywnej reakcji na żart
     jokeReaction: ['ha', 'he', 'hehe', 'haha', 'heh', 'hah', 'hahah', 'heheh'],
+    // prośba o wyczyszczenie bazy
     clear: ['zapomnij baze', 'wyczysc baze', 'wyczyść bazę', 'wyczyść bazę', 'zapomnij bazę'],
+    // definicja podziękowania
     thank: ['dzięki', 'dzieki', 'thx', 'dziex', 'dziękuję', 'dziekuje', 'dziękuje', 'dziekuję']
   }
 }
@@ -365,18 +382,26 @@ function events(){
 // po zaladowaniu strony
 $(function(){
   // uzyskanie podstawowej bazy
+  // przez wykonanie zapytania GET po bazę w JSON
   $.getJSON('data/data.json', function(data) {
     cfg.data = data;
+    // jeżeli obie bazy zostały załadowane
     if(cfg.data && cfg.data_jokes){
+      // tworzenie nowej instancji
       app = new Bot(cfg);
+      // rejestracja zdarzen
       events();
     }
   });
   // uzyskanie bazy z zartami
+  // przez wykonanie zapytania GET po bazę w JSON
   $.getJSON('data/jokes.json', function(data) {
     cfg.data_jokes = data;
+    // jeżeli obie bazy zostały załadowane
     if(cfg.data && cfg.data_jokes){
+      // tworzenie nowej instancji
       app = new Bot(cfg);
+      // rejestracja zdarzen
       events();
     }
   });
