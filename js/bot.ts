@@ -1,22 +1,22 @@
 class Bot {
     name: string; // nazwa bota
     data: Array<Array<string>>; // baza danych
-    data_helper: Array<Array<string>>; // pomocnicza baza
+    data_helper: Array<Array<string>>; // pomocnicza baza do nowych powiązań
     data_jokes: Array<Array<string>>; // baza dowcipów
-    question_state: { // pytanie
-      question: string, // pytanie uzytkownika
+    question_state: { // czy stan pytania
+      question: string, // treść pytania uzytkownika
       question_id: number // id pytania
-    } | boolean;
+    } | boolean; // lub false czyli brak pytania
     joke_state: boolean | number; // jezeli liczba to oznacza id zartu
     was_joke: boolean; // czy poprzednia wiadomosc byla zartem
     msg_counter: number; // licznik wiadomosci
     functions: {
-      yes: Array<string>,
-      no: Array<string>,
-      clear: Array<string>,
-      joke: Array<string>,
-      jokeReaction: Array<string>,
-      thank: Array<string>
+      yes: Array<string>, // słowa potwierdzające
+      no: Array<string>, // słowa przeczące
+      clear: Array<string>, // słowa czyszcząca baze
+      joke: Array<string>, // słowa proszące o żart
+      jokeReaction: Array<string>, // słowa radości
+      thank: Array<string> // słowa wdzięczności
     };
     constructor(cfg: {
       name: string; // nazwa bota
@@ -32,6 +32,7 @@ class Bot {
         thank: Array<string>
       };
     }) {
+        // przypisanie konfiguracji
         this.name = cfg.name;
         this.data = cfg.data;
         this.functions = cfg.functions;
@@ -48,18 +49,24 @@ class Bot {
           this.log('BLAD KRYTYCZNY: NIEKOMPLETNA BAZA');
           throw new Error("BLAD KRYTYCZNY: niekompletna baza!");
         }
+        // powitanie bota na start
         this.log(`Witaj, jestem asystent ${this.name}. W czym mogę pomóc?`);
   
     }
+    // funkcja do przewijania w dół komunikatora
     private scrollDown(){
+      // selektor do div'a chatu
       var $selector = $(".chat-history");
+      // animacja przy użyciu jQuery
       $selector.animate({
           scrollTop: $selector.offset().top + $selector[0].scrollHeight
       }, 1000);
     }
     // wyświetlenie wiadomości użytkownika
     private sendByUser(msg: string){
+      // aktualizacja licznika wiadomości
       $('#msg-counter').text(this.msg_counter++);
+      // aktualna data
       var date = new Date();
       var htmlString = `
           <li class="clearfix">
@@ -79,7 +86,9 @@ class Bot {
     }
     // wyświetlenie wiadomości bota
     private sendByBot(msg: string){
+      // aktualizacja licznika wiadomości
       $('#msg-counter').text(this.msg_counter++);
+      // aktualna data
       var date = new Date();
       var htmlString = `
           <li>
@@ -126,11 +135,14 @@ class Bot {
     }
     // zapisanie nowego powiazania pytania
     private saveQuestion(){
+      // jeżeli nie istnieje powiązanie to stwórz nowe puste
       if(typeof this.data_helper[this.question_state.question_id] == 'undefined')
         this.data_helper[this.question_state.question_id] = new Array();
+      // przypisz powiązanie
       this.data_helper[this.question_state.question_id].push(this.question_state.question);
       this.log('Zapamietane !');
       this.log(this.data[this.question_state.question_id][1]);
+      // aktualizacja stanu zapytania
       this.question_state = false;
       // todo to localstorange
     }
@@ -140,6 +152,7 @@ class Bot {
     }
     // zapytanie o żart przez bota
     private askJoke(){
+      // losowanie żartu
       this.joke_state = this.randomNumber(1, this.data_jokes.length) - 1;
       this.log(this.data_jokes[this.joke_state][0]);
       this.was_joke = false;
